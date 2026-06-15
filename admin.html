@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Padre Otto Acosta</title>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CSS Estilos -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div class="login-layout" id="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="logo.png" alt="Logo Padre Otto Acosta" style="height: 100px; width: auto; object-fit: contain; max-width: 260px;">
+            </div>
+            <div class="login-header">
+                <h2>Acceso Administrativo</h2>
+                <p>Ingrese sus credenciales de administración escolar</p>
+            </div>
+
+            <!-- Div de error -->
+            <div class="login-error" id="login-error">
+                Usuario o contraseña incorrectos.
+            </div>
+
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-username">Usuario</label>
+                    <input type="text" class="form-control" id="login-username" placeholder="Usuario administrador" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Contraseña</label>
+                    <input type="password" class="form-control" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px; margin-top: 8px;">
+                    <i data-lucide="unlock-keyhole"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="login-links">
+                <a href="index.html"><i data-lucide="arrow-left"></i> Volver a Terminal de Marcaje</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DE ADMINISTRACIÓN (OCULTO POR DEFECTO) -->
+    <div class="app-container" id="admin-container" style="display: none;">
+        
+        <!-- SIDEBAR DE NAVEGACIÓN -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <img src="logo.png" alt="Logo Padre Otto Acosta" style="height: 52px; width: auto; object-fit: contain; max-width: 200px;">
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <li class="nav-item active" data-view="dashboard">
+                    <a><i data-lucide="layout-dashboard"></i> <span>Dashboard</span></a>
+                </li>
+                <li class="nav-item" data-view="employees">
+                    <a><i data-lucide="users"></i> <span>Personal</span></a>
+                </li>
+                <li class="nav-item" data-view="records">
+                    <a><i data-lucide="calendar-check"></i> <span>Asistencia</span></a>
+                </li>
+                <li class="nav-item" data-view="justifications">
+                    <a><i data-lucide="file-text"></i> <span>Justificaciones</span></a>
+                </li>
+                <li class="nav-item" data-view="settings">
+                    <a><i data-lucide="settings"></i> <span>Configuración</span></a>
+                </li>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn-terminal-mode" id="btn-logout-admin">
+                    <i data-lucide="log-out"></i> <span>Cerrar Sesión</span>
+                </button>
+                <div class="theme-toggle-container">
+                    <span>Modo Oscuro</span>
+                    <div class="theme-switch" id="theme-btn"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <!-- Barra superior -->
+            <header class="header-bar">
+                <div class="header-title">
+                    <h1 id="view-title">Dashboard</h1>
+                    <p id="view-subtitle">Resumen diario del estado de asistencia</p>
+                </div>
+                <div class="header-meta">
+                    <div class="date-time-card">
+                        <i data-lucide="clock"></i>
+                        <span id="current-date-time">-- : --</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- VISTA: DASHBOARD -->
+            <section id="view-dashboard" class="view-section active">
+                <!-- Grid de métricas rápidas -->
+                <div class="metrics-grid">
+                    <div class="metric-card primary">
+                        <div class="metric-info">
+                            <span class="metric-label">Personal Total</span>
+                            <span class="metric-value" id="metric-total-emp">0</span>
+                        </div>
+                        <div class="metric-icon"><i data-lucide="users"></i></div>
+                    </div>
+                    <div class="metric-card success">
+                        <div class="metric-info">
+                            <span class="metric-label">Presentes Hoy</span>
+                            <span class="metric-value" id="metric-present">0</span>
+                        </div>
+                        <div class="metric-icon"><i data-lucide="user-check"></i></div>
+                    </div>
+                    <div class="metric-card warning">
+                        <div class="metric-info">
+                            <span class="metric-label">Retrasos Hoy</span>
+                            <span class="metric-value" id="metric-late">0</span>
+                        </div>
+                        <div class="metric-icon"><i data-lucide="alert-triangle"></i></div>
+                    </div>
+                    <div class="metric-card danger">
+                        <div class="metric-info">
+                            <span class="metric-label">Ausentes Hoy</span>
+                            <span class="metric-value" id="metric-absent">0</span>
+                        </div>
+                        <div class="metric-icon"><i data-lucide="user-x"></i></div>
+                    </div>
+                </div>
+
+                <!-- Sección de Gráficos y Actividad -->
+                <div class="dashboard-layout">
+                    <!-- Tarjeta de gráfico semanal -->
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="bar-chart-3"></i> Puntualidad Semanal</h3>
+                        </div>
+                        <div style="position: relative; height: 320px; width: 100%;">
+                            <canvas id="weeklyAttendanceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Actividad Reciente del Día -->
+                    <div class="activity-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="activity"></i> Actividad de Hoy</h3>
+                        </div>
+                        <div class="activity-list" id="recent-activity-list">
+                            <!-- Inserción dinámica por JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VISTA: GESTIÓN DE PERSONAL -->
+            <section id="view-employees" class="view-section">
+                <div class="controls-bar">
+                    <div class="search-input-group">
+                        <i data-lucide="search"></i>
+                        <input type="text" class="search-input" id="search-employees" placeholder="Buscar personal...">
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-employee">
+                        <i data-lucide="user-plus"></i> Registrar Empleado
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="custom-table" id="table-employees">
+                        <thead>
+                            <tr>
+                                <th>Cédula/ID</th>
+                                <th>Nombre Completo</th>
+                                <th>Rol/Cargo</th>
+                                <th>Horario Entrada / Salida</th>
+                                <th>Tolerancia</th>
+                                <th>PIN Terminal</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employees-tbody">
+                            <!-- Inserción dinámica por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- VISTA: HISTORIAL Y REPORTES -->
+            <section id="view-records" class="view-section">
+                <div class="controls-bar">
+                    <div class="filter-group">
+                        <input type="date" class="select-filter" id="filter-date-start">
+                        <input type="date" class="select-filter" id="filter-date-end">
+                        <select class="select-filter" id="filter-role">
+                            <option value="All">Todos los Roles</option>
+                            <option value="Docente">Docente</option>
+                            <option value="Administrativo">Administrativo</option>
+                            <option value="Directivo">Directivo</option>
+                            <option value="Auxiliar">Auxiliar</option>
+                        </select>
+                        <select class="select-filter" id="filter-status">
+                            <option value="All">Todos los Estados</option>
+                            <option value="A tiempo">A tiempo</option>
+                            <option value="Tarde">Tarde</option>
+                            <option value="Falta">Falta</option>
+                            <option value="Justificado">Justificado</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" id="btn-export-records">
+                        <i data-lucide="download"></i> Exportar CSV
+                    </button>
+                    <button class="btn btn-primary" id="btn-print-signatures">
+                        <i data-lucide="printer"></i> Imprimir Planilla
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="custom-table" id="table-records">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Empleado</th>
+                                <th>Cargo</th>
+                                <th>Entrada</th>
+                                <th>Salida</th>
+                                <th>Estado</th>
+                                <th>Retraso</th>
+                                <th>Notas/Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-tbody">
+                            <!-- Inserción dinámica por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- VISTA: JUSTIFICACIONES -->
+            <section id="view-justifications" class="view-section">
+                <div class="dashboard-layout" style="grid-template-columns: 1fr 2fr;">
+                    
+                    <!-- Formulario de Justificación -->
+                    <div class="chart-card" style="height: fit-content;">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="file-plus"></i> Registrar Permiso</h3>
+                        </div>
+                        <form id="form-justification">
+                            <div class="form-group">
+                                <label class="form-label">Empleado</label>
+                                <select class="form-control" id="just-employee-id" required>
+                                    <!-- Cargar dinámicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Fecha de Ausencia</label>
+                                <input type="date" class="form-control" id="just-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tipo de Permiso</label>
+                                <select class="form-control" id="just-type" required>
+                                    <option value="Licencia médica">Licencia médica</option>
+                                    <option value="Día económico">Día económico</option>
+                                    <option value="Vacaciones">Vacaciones</option>
+                                    <option value="Comisión">Comisión oficial</option>
+                                    <option value="Otro">Otro Motivo</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Detalles / Justificación</label>
+                                <textarea class="form-control" id="just-reason" rows="3" placeholder="Detalle el motivo de la inasistencia..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i data-lucide="check"></i> Guardar Justificación
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Tabla de Justificaciones -->
+                    <div class="activity-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="clipboard-list"></i> Justificaciones Registradas</h3>
+                        </div>
+                        <div class="table-wrapper" style="box-shadow: none;">
+                            <table class="custom-table" id="table-justifications">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Empleado</th>
+                                        <th>Tipo</th>
+                                        <th>Motivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="justifications-tbody">
+                                    <!-- Inserción dinámica por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VISTA: CONFIGURACIÓN -->
+            <section id="view-settings" class="view-section">
+                <div class="dashboard-layout" style="grid-template-columns: 1.2fr 1fr;">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="clock"></i> Horario de Jornada General</h3>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+                            Configure la hora oficial de entrada, salida y tolerancia general de la escuela. Al registrar personal nuevo, este será el horario predeterminado aplicado.
+                        </p>
+                        <form id="form-settings">
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label class="form-label">Hora Entrada General</label>
+                                    <input type="time" class="form-control" id="settings-check-in" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Hora Salida General</label>
+                                    <input type="time" class="form-control" id="settings-check-out" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tolerancia General (Minutos)</label>
+                                <input type="number" class="form-control" id="settings-tolerance" min="0" max="60" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                                <i data-lucide="save"></i> Guardar Configuración
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="activity-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i data-lucide="info"></i> Información del Sistema</h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 16px; font-size: 0.9rem;">
+                            <p><strong>Institución:</strong> Escuela de Educación Básica Fiscomisional Padre Otto Acosta</p>
+                            <p><strong>Red:</strong> Fe y Alegría Ecuador</p>
+                            <p><strong>Fecha del Sistema:</strong> 15 de junio de 2026 (Sembrado de demostración)</p>
+                            <hr style="border: 0; border-top: 1px solid var(--border-color);">
+                            <p><strong>Nota:</strong> Los cambios realizados en el horario general servirán como valores predeterminados para las nuevas altas de personal. También puedes modificar los horarios específicos de cada empleado de forma individual desde la sección de <strong>Personal</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: REGISTRAR/EDITAR EMPLEADO -->
+    <div class="modal-overlay" id="employee-modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 class="modal-title" id="employee-modal-title">Registrar Personal</h3>
+                <button class="modal-close" id="btn-close-emp-modal">&times;</button>
+            </header>
+            <form id="form-employee">
+                <div class="modal-body">
+                    <input type="hidden" id="emp-action" value="create">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Cédula / ID de Empleado</label>
+                        <input type="text" class="form-control" id="emp-id" placeholder="Ej: 1001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-control" id="emp-name" placeholder="Ej: Juan Pérez" required>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">Rol / Cargo</label>
+                            <select class="form-control" id="emp-role" required>
+                                <option value="Docente">Docente</option>
+                                <option value="Administrativo">Administrativo</option>
+                                <option value="Directivo">Directivo</option>
+                                <option value="Auxiliar">Auxiliar</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">PIN Terminal (4 dígitos)</label>
+                            <input type="password" class="form-control" id="emp-pin" maxlength="4" placeholder="Ej: 1234" required pattern="\d{4}">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label class="form-label">Hora Entrada (HH:MM)</label>
+                            <input type="time" class="form-control" id="emp-check-in" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora Salida (HH:MM)</label>
+                            <input type="time" class="form-control" id="emp-check-out" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tolerancia (Minutos)</label>
+                        <input type="number" class="form-control" id="emp-tolerance" min="0" max="60" value="10" required>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-emp-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <!-- JS Admin Lógica -->
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>
