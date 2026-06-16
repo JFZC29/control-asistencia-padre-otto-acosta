@@ -12,7 +12,7 @@ const KEYS = {
 // Datos semilla iniciales (Si LocalStorage está vacío)
 const SEED_EMPLOYEES = [
     { id: '1305648956', name: 'Narcisa Lolaida Cedeño Andrade', pin: '8956', role: 'Docente', schedule: { checkIn: '07:30', checkOut: '13:30', tolerance: 10 }, status: 'active' },
-    { id: '1724863871', name: 'Johao Fernando Zambrano Cedeño', pin: '3871', role: 'Directivo', schedule: { checkIn: '07:00', checkOut: '15:00', tolerance: 15 }, status: 'active' },
+    { id: '1724863871', name: 'Johao Fernando Zambrano Cedeño', pin: '3871', role: 'Directivo', schedule: { checkIn: '07:30', checkOut: '13:30', tolerance: 10 }, status: 'active' },
     { id: '1722235676', name: 'Cristhian Alfredo Coveña Cedeño', pin: '5676', role: 'Docente', schedule: { checkIn: '07:30', checkOut: '13:30', tolerance: 10 }, status: 'active' }
 ];
 
@@ -72,7 +72,7 @@ const SEED_JUSTIFICATIONS = [];
 // Inicialización del servicio
 export const DataService = {
     init() {
-        const CURRENT_VERSION = 'v4';
+        const CURRENT_VERSION = 'v5';
         
         // Control de versiones de base de datos local para forzar actualización inmediata
         if (localStorage.getItem('school_attendance_db_version') !== CURRENT_VERSION) {
