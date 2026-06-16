@@ -1214,31 +1214,53 @@ body {
     color: var(--color-primary-hover);
 }
 
+/* ===== ELEMENTOS DE RESPONSIVIDAD (MENÚ MÓVIL) ===== */
+.btn-mobile-menu {
+    display: none; /* Oculto en pantallas grandes */
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.btn-mobile-menu:hover {
+    background-color: var(--bg-primary);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-mobile-menu i {
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 99; /* Por debajo de la sidebar activa */
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.sidebar-backdrop.active {
+    display: block;
+    opacity: 1;
+}
+
 /* Responsividad general */
 @media (max-width: 992px) {
-    .sidebar {
-        width: 80px;
-        padding: 16px 8px;
-    }
-    .brand-text, .nav-item span, .sidebar-footer span, .btn-terminal-mode span {
-        display: none;
-    }
-    .brand {
-        justify-content: center;
-        padding-bottom: 16px;
-    }
-    .nav-item a {
-        justify-content: center;
-        padding: 12px;
-    }
-    .main-content {
-        margin-left: 80px;
-        width: calc(100% - 80px);
-        padding: 24px;
-    }
-    .dashboard-layout {
-        grid-template-columns: 1fr;
-    }
+    /* Terminal de Marcaje - Pantalla Completa */
     .terminal-body {
         grid-template-columns: 1fr;
         padding: 24px;
@@ -1247,33 +1269,140 @@ body {
     .terminal-left {
         display: none; /* Ocultar arte y lema en móvil para enfocar teclado */
     }
+    .terminal-header {
+        padding: 16px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Menú móvil tipo Cajón (Drawer) */
+    .btn-mobile-menu {
+        display: inline-flex; /* Mostrar botón de hamburguesa */
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -280px; /* Escondido por defecto a la izquierda */
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 100;
+        box-shadow: var(--shadow-lg);
+        transition: left var(--transition-normal);
+    }
+
+    .sidebar.active {
+        left: 0; /* Deslizar hacia adentro cuando se activa */
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+
+    /* Ajuste en el header del panel */
+    .header-bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .header-title {
+        flex-grow: 1;
+    }
+    
+    .header-title h1 {
+        font-size: 1.4rem;
+    }
+
+    .header-title p {
+        font-size: 0.85rem;
+    }
+
+    /* Gráficos y Dashboard */
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
 }
 
 @media (max-width: 576px) {
-    .header-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
+    .metrics-grid {
+        grid-template-columns: 1fr; /* Una sola columna para celulares */
+        gap: 12px;
     }
+
+    .header-bar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
     .header-meta {
         width: 100%;
     }
+
     .date-time-card {
         width: 100%;
         justify-content: center;
+        font-size: 0.8rem;
+        padding: 8px 12px;
     }
+
     .controls-bar {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
     }
+
     .search-input-group {
         max-width: 100%;
     }
+
     .filter-group {
         flex-direction: column;
         align-items: stretch;
+        gap: 8px;
+    }
+    
+    /* Terminal de marcaje en móviles pequeños */
+    .terminal-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .terminal-clock {
+        align-items: center;
+    }
+    
+    .terminal-time {
+        font-size: 1.8rem;
+    }
+    
+    .pin-terminal {
+        padding: 20px;
+    }
+    
+    .key-btn {
+        height: 56px;
+        font-size: 1.25rem;
+    }
+    
+    .terminal-footer {
+        flex-direction: column;
+        padding: 16px 20px;
+        gap: 12px;
+        text-align: center;
     }
 }
+
 
 /* ===== TERMINAL FOOTER ===== */
 .terminal-footer {

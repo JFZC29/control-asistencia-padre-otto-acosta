@@ -22,11 +22,14 @@ const DOM = {
     loginError: document.getElementById('login-error'),
     btnLogoutAdmin: document.getElementById('btn-logout-admin'),
     
-    // Navegación
+    // Navigation selectors updated for mobile menu
     navItems: document.querySelectorAll('.nav-item'),
     viewTitle: document.getElementById('view-title'),
     viewSubtitle: document.getElementById('view-subtitle'),
     viewSections: document.querySelectorAll('.view-section'),
+    btnMobileMenu: document.getElementById('btn-mobile-menu'),
+    sidebarBackdrop: document.getElementById('sidebar-backdrop'),
+    sidebar: document.querySelector('.sidebar'),
     
     // Controles Globales
     currentDateTime: document.getElementById('current-date-time'),
@@ -142,6 +145,13 @@ const startClock = () => {
 
 // --- SPA NAVEGACIÓN ---
 const initNavigation = () => {
+    const closeMobileMenu = () => {
+        if (DOM.sidebar.classList.contains('active')) {
+            DOM.sidebar.classList.remove('active');
+            DOM.sidebarBackdrop.classList.remove('active');
+        }
+    };
+
     DOM.navItems.forEach(item => {
         item.addEventListener('click', () => {
             const targetView = item.getAttribute('data-view');
@@ -158,8 +168,21 @@ const initNavigation = () => {
 
             updateHeaderTitles(targetView);
             loadViewData(targetView);
+            closeMobileMenu();
         });
     });
+
+    // Mobile menu toggle click handlers
+    if (DOM.btnMobileMenu) {
+        DOM.btnMobileMenu.addEventListener('click', () => {
+            DOM.sidebar.classList.toggle('active');
+            DOM.sidebarBackdrop.classList.toggle('active');
+        });
+    }
+
+    if (DOM.sidebarBackdrop) {
+        DOM.sidebarBackdrop.addEventListener('click', closeMobileMenu);
+    }
 
     DOM.themeBtn.addEventListener('click', () => {
         currentTheme = currentTheme === 'light' ? 'dark' : 'light';
